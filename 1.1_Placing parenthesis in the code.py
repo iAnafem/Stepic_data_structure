@@ -26,23 +26,23 @@ def check(_str):
         return numbers[-1]
 
 
-assert check("{}([]") == 3, print(check("{}([]"))
-assert check("(((((((((((((((()))") == 13, print(check("(((((((((((((((()))"))
-assert check("([]") == 1, print(check("([]"))
-assert check("]]]") == 1, print(check("]]]"))
-assert check("([](){([])})") == "Success", print(check("([](){([])})"))
-assert check("()[]}") == 5, print(check("()[]}"))
-assert check("{{[()]]") == 7, print(check("{{[()]]"))
-assert check("{{{[][][]") == 3, print(check("{{{[][][]"))
-assert check("{*{{}") == 3, print(check("{*{{}"))
-assert check("[[*") == 2, print(check("[[*"))
-assert check("{*}") == "Success", print(check("{*}"))
-assert check("{{") == 2, print(check("{{"))
-assert check("{}") == "Success", print(check("{}"))
-assert check("") == "Success", print(check(""))
-assert check("}") == 1, print(check("}"))
-assert check("*{}") == "Success", print(check("*{}"))
-assert check("{{{**[][][]") == 3, print(check("{{{**[][][]"))
+assert check("{}([]") == 3
+assert check("(((((((((((((((()))") == 13
+assert check("([]") == 1
+assert check("]]]") == 1
+assert check("([](){([])})") == "Success"
+assert check("()[]}") == 5
+assert check("{{[()]]") == 7
+assert check("{{{[][][]") == 3
+assert check("{*{{}") == 3
+assert check("[[*") == 2
+assert check("{*}") == "Success"
+assert check("{{") == 2
+assert check("{}") == "Success"
+assert check("") == "Success"
+assert check("}") == 1
+assert check("*{}") == "Success"
+assert check("{{{**[][][]") == 3
 
 
 def check_2(s):
