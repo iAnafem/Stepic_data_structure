@@ -38,6 +38,7 @@ class Buffer:
 def main():
     _size, n = map(int, input().split(" "))
     lst = [Package(*map(int, input().split())) for i in range(n)]
+    print(lst)
     buffer = Buffer(_size)
     for p in lst:
         buffer.add_package(p)
