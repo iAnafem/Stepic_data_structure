@@ -1,9 +1,8 @@
 class MinHeap:
-    def __init__(self, seq, processors):
+    def __init__(self, seq, n):
         self.seq = seq
         self.result = list()
-        self.size = len(seq)
-        self.max_size = processors
+        self.size = n
 
     @staticmethod
     def parent(index):
@@ -21,6 +20,7 @@ class MinHeap:
         self.seq[x], self.seq[y] = self.seq[y], self.seq[x]
 
     def check_processors(self, i):
+        print("do check")
         left = self.left_child(i)
         right = self.right_child(i)
         if left < self.size and self.seq[i][1] == self.seq[left][1] and self.seq[i][0] > self.seq[left][0]:
@@ -30,7 +30,6 @@ class MinHeap:
 
     def sift_up(self, i):
         while i > 0 and self.seq[self.parent(i)][1] > self.seq[i][1]:
-            print(self.parent(i), i)
             self.swap(self.parent(i), i)
             i = self.parent(i)
 
@@ -45,7 +44,8 @@ class MinHeap:
         if min_index != i:
             self.swap(i, min_index)
             self.sift_down(min_index)
-        self.check_processors(min_index)
+        #self.check_processors(min_index)
+        print(self.seq)
 
     def get_min(self):
         return self.seq[0][1]
@@ -55,34 +55,25 @@ class MinHeap:
 
     def change_priority(self, i, value):
         self.seq[i][1] = self.seq[i][1] + value
+        self.sift_down(i)
 
     def add_process(self, task):
-        if len(self.seq) >= self.max_size:
-            self.result.append(self.seq[0])
-            self.change_priority(0, task)
-            self.sift_down(0)
-        else:
-            self.insert(task)
-            if len(self.seq) > 1:
-                self.sift_up(len(self.seq))
-            self.result.append(self.seq[0])
+        self.result.append(self.seq[0])
+        self.change_priority(0, task)
 
 
 def main():
     n, m = map(int, input().split(" "))
     tasks = list(map(int, input().split()))
-    heap = list()
+    heap = list([i, 0] for i in range(n))
     h = MinHeap(heap, n)
+    for item in heap:
+        h.result.append(item)
     for task in tasks:
+        print("do next")
         h.add_process(task)
-        print(h.seq)
-
-    print(h.result)
-
-    print(h.seq)
-#    print(len(h.result))
-#    for pair in h.result:
- #       print(*pair)
+    for res in h.result:
+        print(*res)
 
 
 if __name__ == "__main__":
