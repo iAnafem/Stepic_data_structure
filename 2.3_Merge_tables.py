@@ -1,39 +1,38 @@
 class DSU:
     """ disjoint-set-union class"""
-    def __init__(self, tables):
+    def __init__(self, tables, _max):
         self.tables = tables
+        self.parent = list(i for i in range(len(self.tables)))
+        self._max = _max
+        self.result = list()
 
     def find_set(self, x):
-        if self.tables[x][0] == - 1:
-            x = self.tables[x][1]
-            return self.find_set(x)
-        else:
-            self.tables[x][1] = x
-            return x
+        if x != self.parent[x]:
+            self.parent[x] = self.find_set(self.parent[x])
+        return self.parent[x]
 
     def union_set(self, dest, source):
-        if dest == source or self.tables[dest][1] == self.tables[source][1]:
-            return self.tables[0]
         _dest = self.find_set(dest)
         _source = self.find_set(source)
-        self.tables[_dest][0] += self.tables[_source][0]
-        self.tables[_source][0], self.tables[_source][1] = - 1, _dest
-        if self.tables[_dest][0] > self.tables[0]:
-            self.tables[0] = self.tables[_dest][0]
-        return self.tables[0]
+        if _dest != _source:
+            self.parent[_source] = _dest
+            self.tables[_dest] += self.tables[_source]
+            if self._max < self.tables[_dest]:
+                self._max = self.tables[_dest]
+        self.result.append(self._max)
+        return self.parent[_source]
 
 
 def main():
     n, m = map(int, input().split(" "))
-    strings = list(map(int, input().split()))
+    tables = list(map(int, input().split()))
     merges = [[*map(int, input().split())] for i in range(m)]
-    tables = list([_str, parent] for _str, parent in zip(strings, range(1, n + 1)))
-    tables.insert(0, max(strings))
-    dsu = DSU(tables)
-    result = list()
+    _max = max(tables)
+    tables.insert(0, _max)
+    dsu = DSU(tables, _max)
     for merge in merges:
-        result.append(dsu.union_set(merge[0], merge[1]))
-    for res in result:
+        dsu.union_set(merge[0], merge[1])
+    for res in dsu.result:
         print(res)
 
 
