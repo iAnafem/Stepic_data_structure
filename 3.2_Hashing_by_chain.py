@@ -1,6 +1,6 @@
 class ChainHash:
     def __init__(self, _hash):
-        self.hash = _hash
+        self._hash = _hash
         self.x = 263
         self.mod = 1000000007
         self.output = list()
@@ -8,7 +8,7 @@ class ChainHash:
     def pow(self, degree):
         result = self.x
         for i in range(degree - 1):
-            result *= self.x % self.mod
+            result = result * self.x % self.mod
         return result
 
     def calc_hash(self, string):
@@ -19,16 +19,23 @@ class ChainHash:
         return result
 
     def add_string(self, string):
-        pass
+        if self.find_string(string) == "yes":
+            return
+        else:
+            self._hash[self.calc_hash(string)].insert(0, string)
 
     def del_string(self, string):
-        pass
+        if self.find_string(string) == "yes":
+            self._hash[self.calc_hash(string)].remove(string)
 
     def find_string(self, string):
-        pass
+        if string in self._hash[self.calc_hash(string)]:
+            return "yes"
+        else:
+            return "no"
 
     def check_string(self, i):
-        pass
+        print(*self._hash[i])
 
 
 def main():
@@ -42,19 +49,15 @@ def main():
         elif req[0] == "del":
             c.del_string(req[1])
         elif req[0] == "find":
-            c.find_string(req[1])
+            print(c.find_string(req[1]))
         else:
-            c.check_string(req[1])
-    print(c.calc_hash("world"))
-    print(c.calc_hash("lol"))
-    print(c.calc_hash("HellO"))
-    print(c.calc_hash("pursue"))
-    print(c.calc_hash("WORLD"))
-    print(c.calc_hash("Haskel"))
+            c.check_string(int(req[1]))
+
     return c
 
 
 def tests(c):
+    assert c.calc_hash("luck") == 2
     assert c.calc_hash("world") == 4
     assert c.calc_hash("HellO") == 4
 
