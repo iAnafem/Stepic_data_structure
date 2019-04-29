@@ -1,12 +1,8 @@
 class Hash:
-    def __init__(self, pattern, text):
-        self.pattern = pattern
-        self.text = text
+    def __init__(self):
         self.x = 263
         self.mod = 1000000007
-        self.L = len(pattern)
-        self.degree = self.L - 1
-        self.pol = self.pow(self.degree)
+        self.result = list()
 
     def pow(self, degree):
         if degree == 0:
@@ -19,46 +15,47 @@ class Hash:
         else:
             return (self.pow(degree - 1) * self.x) % self.mod
 
-    def pattern_hash(self):
+    def calc_hash(self, string):
         _hash = 0
-        for i in range(len(self.pattern)):
-            _hash += ((ord(self.pattern[i]) * self.pow(i)) % self.mod)
+        for i in range(len(string)):
+            _hash += ((ord(string[i]) * self.pow(i)) % self.mod)
         return _hash % self.mod
 
-    def right_hash(self, text):
-        _hash = 0
-        for i in range(len(text)):
-            _hash += (ord(text[i]) * self.x ** i) % self.mod
-        return _hash
+    def rolling_hash(self, prev_hash, left, right, pow_right):
+        return ((prev_hash - (right * pow_right) % self.mod) * self.x + left) % self.mod
 
-    def recalculate(self, i, old_hash):
-        return ord(self.text[i]) + ((old_hash - ord(self.text[i + self.L]) * self.pol) * self.x) % self.mod
+    def implementation(self, pattern, text):
+        self.result.clear()
+        size = len(pattern)
+        if pattern == text:
+            return [0]
+        pattern_hash = self.calc_hash(pattern)
+        window_hash = self.calc_hash(text[-size:])
+        pow_right = self.pow(size - 1)
+        i = len(text) - size
+        while True:
+            if window_hash == pattern_hash and text[i] == pattern[0] and text[i + size - 1] == pattern[-1]:
+                self.result += [i]
+            i -= 1
+            if i < 0:
+                break
+            window_hash = self.rolling_hash(window_hash, ord(text[i]), ord(text[i + size]), pow_right)
+        return self.result
 
 
 def main():
-    pattern = input().strip()
-    text = input().strip()
-    result = []
-    h = Hash(pattern, text)
-    pattern_hash = h.pattern_hash()
-    start = len(text) - len(pattern)
-    old_hash = h.right_hash(text[start:])
-    if old_hash == pattern_hash:
-        if text[start:] == pattern:
-            result.insert(0, start)
-    for i in range(start - 1, -1, -1):
-        new_hash = h.recalculate(i, old_hash)
-        if new_hash == pattern_hash:
-            if text[i: i + h.L] == pattern:
-                result.insert(0, i)
-        old_hash = new_hash
-    print(*result)
+    h = Hash()
+    print(*reversed(h.implementation(input().strip(), input().strip())))
+
+
+def tests():
+    h_test = Hash()
+    assert h_test.implementation("aba", "abacaba") == [4, 0]
+    assert h_test.implementation("Test", "testTesttesT") == [4]
+    assert h_test.implementation("aaaaa", "baaaaaaa") == [3, 2, 1]
+    assert h_test.implementation("aaaaaaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaaaaaa") == [0]
 
 
 if __name__ == "__main__":
+    tests()
     main()
-
-
-
-
-
